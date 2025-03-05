@@ -1,123 +1,89 @@
-# Dashboards
+# 📊 Tableau Sales Performance Dashboard
 
-## 📊 Tableau Sales Dashboard
-View the interactive dashboard on **[Tableau Public](https://public.tableau.com/views/Sales_17411241874230/Dashboard1)**.
+## 🔗 View the Interactive Dashboard
+[View on Tableau Public](https://public.tableau.com/views/Sales_17411241874230/Dashboard1)
 
 ![Dashboard Preview](https://public.tableau.com/static/images/Sa/Sales_17411241874230/Dashboard1/1.png)
 
+## 📌 Project Overview
+This Tableau dashboard provides a comprehensive analysis of sales performance, enabling users to track key metrics such as **total sales, quantity sold, profit trends, and sub-category comparisons** over time. The dashboard is **interactive**, allowing for dynamic filtering using a **year selection parameter**.
 
-This interactive dashboard tracks sales, quantity, and profit trends with dynamic year selection. It features YoY growth indicators (▲/▼), weekly trends, and sub-category performance. Custom formatting highlights key insights, helping businesses analyze trends and optimize sales strategies
-📊 Tableau Sales Performance Dashboard – Project Documentation
-📌 Project Overview
-This Tableau dashboard provides a comprehensive sales performance analysis, helping stakeholders track key metrics such as total sales, quantity sold, profit trends, and sub-category comparisons over time. The dashboard is interactive, allowing users to filter data dynamically using a parameter-based year selection.
+## 🔹 Data Modeling & Structure
+The dashboard integrates multiple CSV datasets:
+- `Customers.csv` – Customer details (ID, Segment, Region)
+- `Orders.csv` – Transaction details (Order ID, Date, Sales, Quantity, Profit)
+- `Products.csv` – Product categories and subcategories
+- `Location.csv` – Geographic data (Country, State, Postal Code)
 
-🔹 Data Modeling & Structure
-The dashboard is built using multiple CSV files:
+### **Schema Design**
+The data follows a **star schema**, ensuring optimized performance:
+- **Orders** table links to **Customers** via `Customer ID`
+- **Orders** table links to **Products** via `Product ID`
+- **Orders** table links to **Location** via `Postal Code`
 
-Customers.csv – Contains customer details (ID, Segment, Region).
-Orders.csv – Includes transaction-level details (Order ID, Date, Sales, Quantity, Profit).
-Products.csv – Lists product categories, subcategories, and IDs.
-Location.csv – Contains geographic data for mapping (Country, State, Postal Code).
-Data Relationships:
-Orders table is linked to Customers via Customer ID.
-Orders table is linked to Products via Product ID.
-Orders table is linked to Location via Postal Code.
-This star schema structure ensures optimized performance while filtering and aggregating data.
+## 🧮 Key Calculated Fields
 
-🔹 Key Calculated Fields (Dynamically Computed Metrics)
-1️⃣ Total Sales vs. Previous Year (YoY Growth)
-Tableau
-Copy
-Edit
+### 1️⃣ **Year-over-Year (YoY) Growth**
+```tableau
 YoY Growth = (SUM([Sales]) - LOOKUP(SUM([Sales]), -1)) / LOOKUP(SUM([Sales]), -1)
-This formula calculates the percentage change in total sales compared to the previous year.
-Used in the Total Sales KPI with an upward/downward trend indicator.
-2️⃣ Sales Quantity YoY Comparison
-Tableau
-Copy
-Edit
-YoY Quantity Change = (SUM([Quantity]) - LOOKUP(SUM([Quantity]), -1)) / LOOKUP(SUM([Quantity]), -1)
-Used in the Quantity KPI to display the growth percentage vs. previous year.
-3️⃣ Custom Header Formatting with Trend Indicator
-To display an upward arrow (▲) or downward arrow (▼) based on YoY sales growth:
+```
+📌 This formula calculates the percentage change in sales compared to the previous year and is used in KPI indicators.
 
-Tableau
-Copy
-Edit
+### 2️⃣ **Sales Quantity YoY Comparison**
+```tableau
+YoY Quantity Change = (SUM([Quantity]) - LOOKUP(SUM([Quantity]), -1)) / LOOKUP(SUM([Quantity]), -1)
+```
+
+### 3️⃣ **Custom KPI Header with Trend Indicators**
+```tableau
 IF [YoY Growth] > 0 THEN "▲ " + STR(ROUND([YoY Growth]*100,2)) + "%" 
 ELSE "▼ " + STR(ROUND([YoY Growth]*100,2)) + "%" END
-Green "▲" → Indicates sales increase.
-Red "▼" → Indicates sales decline.
-4️⃣ Running Total for Weekly Sales & Profit Trends
-Tableau
-Copy
-Edit
+```
+✅ **Green ▲** → Sales increase  
+❌ **Red ▼** → Sales decrease
+
+### 4️⃣ **Running Total for Weekly Sales & Profit Trends**
+```tableau
 RUNNING_SUM(SUM([Sales]))
-Used in the Weekly Trend Line Chart for cumulative sales visualization.
-🔹 Creating Parameters & Dynamic Filters
-1️⃣ Year Selection Parameter
-Created a parameter called select Year (Integer type) to allow users to choose a year dynamically.
-Added values: 2020, 2021, 2022, 2023.
-Used in a calculated field:
-Tableau
-Copy
-Edit
+```
+Used in weekly trend charts to visualize cumulative sales performance.
+
+## 🎛️ Dynamic Filtering & Parameters
+
+### 1️⃣ **Year Selection Parameter**
+- Created an **integer parameter** `select Year` for dynamic year selection.
+- Applied in calculated fields:
+```tableau
 IF YEAR([Order Date]) = [select Year] THEN [Sales] ELSE NULL
-This ensures that only the selected year’s data is displayed.
-Linked with all charts & KPIs for interactive filtering.
-2️⃣ Dynamic Filters
-Applied filters using:
-Date (Order Date)
-Product Sub-category
-Customer Segment
-Region
-This allows users to drill down into specific time periods or product categories.
+```
+- Dynamically filters all charts & KPIs.
 
-🔹 Visual Elements & Charts
-1️⃣ KPI Cards
-Total Sales (compared to previous year)
-Quantity Sold (YoY change percentage)
-Profit Trend
-Indicators (▲ / ▼) for performance tracking
-2️⃣ Weekly Sales & Profit Trend
-Line charts for sales & profit across weeks.
-Displays weekly seasonality & fluctuations.
-3️⃣ Sub-Category Comparison
-Bar chart visualizing sales and profit by product sub-category.
-Color-coded to highlight high and low-performing categories.
-4️⃣ Yearly Comparison Line Chart
-Shows sales growth over time with the ability to select a specific year.
-🔹 Use Cases of the Dashboard
-✔ Sales Performance Tracking
+### 2️⃣ **Filters Applied**
+✅ Order Date  
+✅ Product Sub-category  
+✅ Customer Segment  
+✅ Region  
+Allows users to drill down into specific time periods and product categories.
 
-Helps business leaders track total revenue, profit, and sales trends.
-✔ Identifying High & Low Performing Categories
+## 📊 **Visual Elements & Charts**
+- **KPI Cards**: Total Sales, Quantity Sold, Profit Trend, YoY Growth Indicators
+- **Weekly Sales & Profit Trend**: Line chart for weekly fluctuations
+- **Sub-Category Comparison**: Sales and profit bar charts by category
+- **Yearly Sales Trend**: Line chart showing long-term sales performance
 
-The Sub-Category Comparison chart allows stakeholders to identify which products contribute most to revenue.
-✔ Yearly Sales Trend Analysis
+## 🚀 Use Cases
+✅ **Sales Performance Tracking** – Monitor revenue, profit, and sales trends  
+✅ **Identifying High & Low Performing Categories** – Optimize product strategy  
+✅ **Yearly Sales Trend Analysis** – Understand long-term growth patterns  
+✅ **Weekly Trends for Forecasting** – Identify seasonal patterns for better planning  
+✅ **Custom Reporting** – Analyze sales across regions, product types, and time periods  
 
-Users can select different years to compare sales performance dynamically.
-✔ Understanding Weekly Trends
+## ✅ Summary
+✔ **Data Model**: Star schema with Orders, Customers, Products, and Location tables  
+✔ **Calculated Fields**: YoY Growth, Running Totals, Custom KPI Headers  
+✔ **Dynamic Parameters**: Year selection for filtering all visuals  
+✔ **Custom Formatting**: ▲/▼ indicators for sales performance  
+✔ **Interactive Analysis**: Drill-down capabilities for deeper insights  
 
-Helps in forecasting future sales by recognizing seasonal sales patterns.
-✔ Interactive & Customizable Reporting
 
-Enables sales teams to filter data by product, region, or customer type for detailed analysis.
-🚀 Summary
-✅ Data Model: Star schema with Orders, Customers, Products, and Location tables.
-✅ Calculated Fields: YoY Growth, Running Totals, Custom KPI Headers.
-✅ Parameters: Select Year dynamically filters all visuals.
-✅ Custom Formatting: ▲/▼ markers for trend visualization.
-✅ Use Cases: Sales performance tracking, forecasting, and sub-category analysis.
 
-Would you like me to help enhance this dashboard further, such as adding forecasting, advanced filters, or profit margin calculations? 🚀
-
-You said:
-write a short decription noe
-ChatGPT said:
-📊 Tableau Sales Performance Dashboard
-This interactive Tableau dashboard provides a comprehensive view of sales performance, allowing users to track total sales, quantity sold, and profit trends over time. The dashboard features dynamic year selection using a parameter, enabling users to analyze specific time periods.
-
-Key insights include YoY growth indicators (▲/▼), a weekly sales and profit trend, and a sub-category performance comparison. Custom formatting highlights upward/downward trends, while filters allow for deep analysis by product, region, and customer segment.
-
-This dashboard helps businesses monitor key metrics, identify top-performing categories, and optimize sales strategies. 🚀
